@@ -1,15 +1,16 @@
 package com.pluralsight;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class NeighborhoodLibrary {
     public static class Library {
 
-        private static Book[] books = new Book[20];
+        private static final Book[] books = new Book[20];
+        static List<Book> checkOut = new ArrayList<>();
 
         private static int numBooks = 5;
-
-        private static checkout()
 
         public static void main(String[] args) {
 
@@ -39,7 +40,7 @@ public class NeighborhoodLibrary {
 
                 switch (command) {
                     case 1 -> showBooks(myObj);
-                    case 2 -> System.exit(0);
+                    case 2 -> checkedOutBooks(myObj);
                     case 3-> isDone = true;
                 }
             }
@@ -66,6 +67,14 @@ public class NeighborhoodLibrary {
                     String name = command.nextLine();
 
                     System.out.println("Thank you " + name + " For checking out " + books[i].getTitle());
+                    books[i].checkOut(name);
+                    checkOut.add(books[i]);
+
+                    for (int j = i; j < books.length - 1; j++) {
+                        books[j] = books[j + 1];
+                    }
+                    books[books.length - 1] = null;
+                    numBooks--;
                     bookFound = true;
                 }
             }
@@ -78,8 +87,19 @@ public class NeighborhoodLibrary {
             }
         }
 
-        public  static void checkedOutBooks () {
+        public  static void checkedOutBooks (Scanner command) {
+            for (int i = 0; i < checkOut.size(); i++) {
+                System.out.println(checkOut.get(i));
 
+                System.out.println("Enter the Id of the book to check in (0 to cancel)");
+                int id = command.nextInt();
+                command.nextLine();
+
+                if (checkOut.get(i).getId() == id) {
+                    checkOut.get(i).checkIn();
+                    checkOut.remove(i);
+                }
+            }
         }
     }
 }

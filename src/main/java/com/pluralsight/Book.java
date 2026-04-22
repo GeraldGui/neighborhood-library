@@ -55,13 +55,13 @@ public class Book {
         this.checkedOutTo = checkedOutTo;
     }
 
-    public void checkOut(int id, String isbn, String title, String name) {
-
-        if (!isCheckedOut) {
-            System.out.println("Id: " +  getId() + " ISBN " + getIsbn() + " Title: " + getTitle() + " -> " + name);
-        }
+    public void checkOut(String name) {
+        isCheckedOut = true;
+        checkedOutTo = name;
     }
     public void checkIn () {
+        isCheckedOut = false;
+        checkedOutTo = null;
     }
 
     @Override
