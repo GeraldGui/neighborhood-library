@@ -50,19 +50,21 @@ public class NeighborhoodLibrary {
 
             System.out.println("Available Books\n-----------------");
 
-            for (int i = 0; i < numBooks; i++) {
-                System.out.println(books[i]);
+            for (int i = 0; i < books.length; i++) {
+                if (books[i] != null) {
+                    System.out.println(books[i]);
+                }
             }
 
             System.out.println("-----------------");
-            System.out.println("Enter the Id of the book to check out (0 to cancel)");
+            System.out.print("Enter the Id of the book to check out (0 to cancel) ");
             int id = command.nextInt();
             command.nextLine();
 
             boolean bookFound = false;
 
-            for (int i = 0; i < numBooks; i++) {
-                if (books[i].getId() == id) {
+            for (int i = 0; i < books.length; i++) {
+                if (books[i] != null &&books[i].getId() == id) {
                     System.out.print("Your name: ");
                     String name = command.nextLine();
 
@@ -70,10 +72,7 @@ public class NeighborhoodLibrary {
                     books[i].checkOut(name);
                     checkOut.add(books[i]);
 
-                    for (int j = i; j < books.length - 1; j++) {
-                        books[j] = books[j + 1];
-                    }
-                    books[books.length - 1] = null;
+                    books[i] = null;
                     numBooks--;
                     bookFound = true;
                 }
@@ -88,18 +87,40 @@ public class NeighborhoodLibrary {
         }
 
         public  static void checkedOutBooks (Scanner command) {
+            if (checkOut.isEmpty()) {
+                System.out.println("No Books are currently checked out.");
+                return;
+            }
+
             for (int i = 0; i < checkOut.size(); i++) {
                 System.out.println(checkOut.get(i));
+            }
 
-                System.out.println("Enter the Id of the book to check in (0 to cancel)");
+            System.out.print("Press C to check in a book, or X to return ");
+            String userOutput = command.nextLine();
+
+            if (userOutput.equalsIgnoreCase("c")) {
+                System.out.print("Enter the Id of the book to check in (0 to cancel) ");
                 int id = command.nextInt();
                 command.nextLine();
 
-                if (checkOut.get(i).getId() == id) {
-                    checkOut.get(i).checkIn();
-                    checkOut.remove(i);
+                for (int i = 0; i < checkOut.size(); i++) {
+                    if (checkOut.get(i).getId() == id) {
+                        Book returned = checkOut.get(i);
+                        returned.checkIn();
+
+                        for (int j = 0; j < books.length; j++) {
+                            if (books[j] == null) {
+                                books[j] = returned;
+                                numBooks++;
+                                break;
+                            }
+                        }
+                        checkOut.remove(i);
+                    }
                 }
             }
         }
     }
 }
+
